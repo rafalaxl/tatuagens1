@@ -3,7 +3,7 @@ const seoData = {
     title: "Pedro Tattoo | Fineline & Microrealismo em Sorocaba",
     description: "Tatuagem fineline em Sorocaba e microrealismo de alta precisão. Estúdio privado focado na precisão que o tempo não apaga.",
     url: "https://wa.me/5515996603395",
-    image: "assets/portfolio/hero-parallax.webp"
+    image: "assets/portfolio/hero-parallax.svg"
 };
 
 // Create Meta Tags
