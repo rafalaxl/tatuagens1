@@ -1,0 +1,28 @@
+# Gemini Project - Ignore Rules
+
+# Documentation
+*.md
+!README.md
+
+# Gemini & Agent Tools
+.gemini/
+tools/
+
+# Environment & OS
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+dist/
+build/
+.next/
+.astro/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* COLORS: DARK MODE PROFUNDO */
+  --black-rich: #050505;
+  --black-obsidian: #0A0A0A;
+  --gray-anthracite: #1A1A1A;
+
+  /* ACCENTS */
+  --gold-champagne: #D4AF37;
+  --gold-light: #E5C76B;
+  --silver-satin: #C0C0C0;
+
+  /* SEMANTIC TOKENS */
+  --color-bg: var(--black-rich);
+  --color-surface: var(--black-obsidian);
+  --color-border: var(--gray-anthracite);
+  
+  --color-text-main: #F5F5F5;
+  --color-text-muted: #A0A0A0;
+  
+  --color-primary: var(--gold-champagne);
+  --color-primary-hover: var(--gold-light);
+  --color-secondary: var(--silver-satin);
+
+  /* TYPOGRAPHY */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* RADII */
+  --radius-smooth: 4px;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text-main)] font-[family-name:var(--font-body)] antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-[family-name:var(--font-heading)] font-bold tracking-tight;
+  }
+
+  a, button {
+    @apply transition-all duration-300 ease-out;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[var(--color-primary)] text-[var(--black-rich)] px-8 py-3 rounded-[var(--radius-smooth)] font-semibold hover:bg-[var(--color-primary-hover)];
+  }
+
+  .btn-outline {
+    @apply border border-[var(--color-primary)] text-[var(--color-primary)] px-8 py-3 rounded-[var(--radius-smooth)] font-semibold hover:bg-[var(--color-primary)] hover:text-[var(--black-rich)];
+  }
+
+  .card-luxury {
+    @apply bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-smooth)] p-6;
+  }
+
+  .input-luxury {
+    @apply bg-transparent border-b border-[var(--color-border)] py-2 focus:border-[var(--color-primary)] outline-none transition-colors w-full;
+  }
+}
