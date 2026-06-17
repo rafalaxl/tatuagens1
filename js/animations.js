@@ -1,108 +1,86 @@
-/**
- * Pedro Tattoo - Animations Control
- * Especialista em GSAP 3 & ScrollTrigger
- * 
- * Este script controla as animações de entrada, parallax e micro-interações 
- * da landing page, garantindo uma experiência de luxo e fluidez.
- */
-
-// Registrar Plugins
-gsap.registerPlugin(ScrollTrigger);
-
 document.addEventListener('DOMContentLoaded', () => {
-    const mm = gsap.matchMedia();
+  // Check user preference for reduced motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    console.log('Reduced motion preferred. Animations disabled.');
+    return;
+  }
 
-    /**
-     * 1. ANIMAÇÕES DO HERO
-     * Parallax na imagem e entrada suave dos textos.
-     */
-    mm.add("(min-width: 768px)", () => {
-        // Efeito Parallax na imagem de fundo (Desktop)
-        // Adicionamos um pequeno scale para evitar bordas vazias durante o movimento
-        gsap.to(".hero-img", {
-            yPercent: 20,
-            scale: 1.1,
-            ease: "none",
-            scrollTrigger: {
-                trigger: "#hero",
-                start: "top top",
-                end: "bottom top",
-                scrub: true
-            }
-        });
+  // Register GSAP ScrollTrigger if GSAP is loaded
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
 
-        // Revelação da Headline e Subheadline
-        gsap.from(".reveal-text", {
-            y: 50,
-            opacity: 0,
-            duration: 1.2,
-            stagger: 0.2,
-            ease: "power4.out",
-            clearProps: "all"
-        });
+    // Disable heavy animations on mobile screens (under 768px)
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    // Hero Text Reveal
+    gsap.from('.hero-animate', {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      stagger: 0.2,
+      ease: 'power3.out'
     });
 
-    mm.add("(max-width: 767px)", () => {
-        // Revelação simplificada para Mobile (Performance)
-        gsap.from(".reveal-text", {
-            y: 30,
-            opacity: 0,
-            duration: 1,
-            stagger: 0.15,
-            ease: "power2.out",
-            clearProps: "all"
-        });
+    // Hero Image Parallax (only on Desktop)
+    if (!isMobile) {
+      gsap.to('.hero-image-parallax', {
+        yPercent: 15,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    }
+
+    // Scroll Fade-in for Cards and Sections
+    gsap.utils.toArray('.scroll-fade-in').forEach((element) => {
+      gsap.from(element, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: element,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
     });
 
-    /**
-     * 2. REVELAÇÃO DE SEÇÕES (SCROLL REVEAL)
-     * Aplica um efeito de fade-in + slide-up em elementos com a classe .reveal
-     */
-    const reveals = gsap.utils.toArray('.reveal');
-    reveals.forEach((el) => {
-        // Verifica se há classes de delay do Tailwind para respeitar a intenção do design
-        const delay = el.classList.contains('delay-200') ? 0.2 : 
-                      el.classList.contains('delay-300') ? 0.3 : 0;
+    // Timeline Progress Line Activation
+    if (!isMobile) {
+      gsap.to('.timeline-line-progress', {
+        height: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.timeline-container',
+          start: 'top 40%',
+          end: 'bottom 60%',
+          scrub: true
+        }
+      });
+    }
+  } else {
+    // Fallback: simple IntersectionObserver if GSAP is not available
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
 
-        gsap.from(el, {
-            scrollTrigger: {
-                trigger: el,
-                start: "top 85%",
-                toggleActions: "play none none none"
-            },
-            y: 40,
-            opacity: 0,
-            duration: 1,
-            delay: delay,
-            ease: "power2.out",
-            clearProps: "transform, opacity"
-        });
-    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
 
-    /**
-     * 3. MICRO-INTERAÇÕES DE BOTÕES
-     * Efeito de escala e brilho sutil ao passar o mouse.
-     */
-    const primaryButtons = document.querySelectorAll('.btn-primary');
-    primaryButtons.forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-            gsap.to(btn, { 
-                scale: 1.03, 
-                backgroundColor: "#E5C76B", // gold-light
-                boxShadow: "0 0 20px rgba(212, 175, 55, 0.3)",
-                duration: 0.3, 
-                ease: "power2.out" 
-            });
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            gsap.to(btn, { 
-                scale: 1, 
-                backgroundColor: "#D4AF37", // gold-champagne
-                boxShadow: "0 0 0px rgba(212, 175, 55, 0)",
-                duration: 0.3, 
-                ease: "power2.out" 
-            });
-        });
+    document.querySelectorAll('.scroll-fade-in').forEach(el => {
+      observer.observe(el);
     });
+  }
 });
